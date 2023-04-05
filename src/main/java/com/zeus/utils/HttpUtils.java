@@ -73,23 +73,22 @@ public class HttpUtils {
         return obj;
     }
     // 发送POST请求（普通表单形式）
-    public static String postForm(String path, List<NameValuePair> parametersBody,String apiKey) throws Exception {
+    public static String postForm(String path, List<NameValuePair> parametersBody) throws Exception {
         HttpEntity entity = new UrlEncodedFormEntity(parametersBody, Charsets.UTF_8);
-        return postRequest(path, "application/x-www-form-urlencoded", apiKey, entity);
+        return postRequest(path, "application/x-www-form-urlencoded", entity);
     }
 
     // 发送POST请求（JSON形式）
-    public static String postJSON(String path, String json,String apiKey) throws Exception {
+    public static String postJSON(String path, String json) throws Exception {
         StringEntity entity = new StringEntity(json, Charsets.UTF_8);
-        return postRequest(path, "application/json", apiKey, entity);
+        return postRequest(path, "application/json", entity);
     }
 
     // 发送POST请求
-    public static String postRequest(String path, String mediaType,String apiKey, HttpEntity entity) throws Exception {
+    public static String postRequest(String path, String mediaType, HttpEntity entity) throws Exception {
         logger.debug("[postRequest] resourceUrl: {}", path);
         HttpPost post = new HttpPost(path);
         post.addHeader("Content-Type", mediaType);
-        post.addHeader("TRON_PRO_API_KEY ", apiKey);
         post.addHeader("Accept", "application/json");
         post.setEntity(entity);
         try {
