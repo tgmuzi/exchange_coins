@@ -3,11 +3,14 @@ package com.zeus.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zeus.modules.trx.entity.BinanceDaiBi;
+import com.zeus.modules.trx.entity.BinancePair;
 import com.zeus.modules.trx.entity.CoinsVo;
 import com.zeus.modules.trx.utils.Constant;
 import com.zeus.modules.trx.utils.TRXData;
 import com.zeus.telegramBot.BottomButton;
 import com.zeus.telegramBot.BuiltInButton;
+import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -73,27 +76,11 @@ public class ExecBot extends TelegramLongPollingBot {
                     }
                     break;
                 case "/start":
-                    JSONObject reply_markup = new JSONObject();
-                    JSONArray inline_keyboard = new JSONArray();
-                    JSONArray jsonArray0 = getRowInlineKeyboard(new String[]{"管理我的群组", "1" + "-callbackdata"});
-                    JSONArray jsonArray1 = getRowInlineKeyboard(new String[]{"合作品牌", "2" + "-callbackdata"}, new String[]{"荣誉榜单", "3" + "-callbackdata"});
-                    JSONArray jsonArray2 = getRowInlineKeyboard(new String[]{"使用指南", "4" + "-callbackdata"}, new String[]{"意见箱", "5" + "-callbackdata"});
-                    JSONArray jsonArray3 = getRowInlineKeyboard(new String[]{"购买广告", "6" + "-callbackdata"}, new String[]{"我的钱包", "7" + "-callbackdata"});
-                    inline_keyboard.add(jsonArray0);
-                    inline_keyboard.add(jsonArray1);
-                    inline_keyboard.add(jsonArray2);
-                    inline_keyboard.add(jsonArray3);
-                    reply_markup.put("inline_keyboard", inline_keyboard);
-                    //                    sendMsg(reply_markup.toString(),chatId);
-                    try {
-                        String fromText = "\uD83D\uDC4F 欢迎  *" + lastName + " *\n\n" + "UID:`" + chatId + "`";
-                        sendDmiPhoto(token, chatId, fromText, reply_markup);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    String fromText = "\uD83D\uDC4F 欢迎 *"+ lastName +"*\n\n UID：`"+chatId+"`";
+                    sendBottomButton(chatId, fromText);
                     break;
                 case "查询":
-                    String fromText = "@" + userName + "\n" + "请输入TRC地址：";
+                    fromText =  "\uD83D\uDC4F 欢迎  *"  + lastName + "*\n\n UID：`" + chatId +"`\n 请输入TRC地址：";
                     try {
                         sendMsg(chatId, fromText);
                     } catch (Exception e) {
@@ -101,17 +88,32 @@ public class ExecBot extends TelegramLongPollingBot {
                     }
                     break;
                 case "查汇率":
-                    String info = TRXData.getsymbol(Constant.BASE_API_URL, Constant.TRX_ADDRESS,Constant.USDT_ADDRESS);
-                    JSONObject jsonObject = JSONObject.parseObject(info);
-                     fromText = "@" + userName + "\n 当前汇率为：\n" + jsonObject.get("price") + "\n" + "以上更新时间为："+ new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
+                    String infoHuiLv ="当前汇率为：\n";
+                    infoHuiLv += TRXData.getsymbol(Constant.BINANCE_API, Constant.DAIBI_USDT_ADDRESS);
+                    infoHuiLv +="\n" + " * 以上更新时间为 * ："+ new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
                     try {
-                        sendMsg(chatId, fromText);
+                        sendMsg(chatId, infoHuiLv);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "兑换TRX":
+                    String info = TRXData.getTrxsymbol(Constant.BINANCE_API);
+                    BinanceDaiBi binanceDaiBi =JSONObject.parseObject(info,BinanceDaiBi.class);
+                    String huilv="";
+                    huilv= "\uD83D\uDC4F 欢迎  *" + lastName + " *\n" +
+                            "\n兑换TRX地址：\n`" +  Constant.TRX_ADDRESS +"`\n * 上述地址点击可复制 * \n" +
+                            " * 进U即兑，全自动返TRX，一笔一回，1U起兑，当前兑换比例 \n 1U : "+TRXData.doubleFormatNumber((1/ binanceDaiBi.getPrice()))+"TRX *\n" +
+                            " * 请不要使用交易所转账，丢失不负责 * \n" +
+                            " * 注：交易经过19次网络确认，两分钟内到账 * ";
+                    try {
+                        sendMsg(chatId, huilv);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
                 case "已绑定地址":
-                     fromText = "@" + userName + "\n" + "请输入TRC地址：";
+                     fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "\n" + "请输入TRC地址：";
                     try {
                         sendMsg(chatId, fromText);
                     } catch (Exception e) {
@@ -129,7 +131,6 @@ public class ExecBot extends TelegramLongPollingBot {
                             e.printStackTrace();
                         }
                     }else{
-                        sendBottomButton(chatId);
                     }
                     break;
             }
@@ -225,6 +226,7 @@ public class ExecBot extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId(chatId + "");
         message.setText(fromText);
+        message.enableMarkdown(true);
         //使用Bot的execute方法发送消息
         try {
             execute(message);
@@ -245,9 +247,9 @@ public class ExecBot extends TelegramLongPollingBot {
         }
     }
         //底部菜单
-    public void sendBottomButton(long chatId) {
+    public void sendBottomButton(long chatId ,String text) {
         ReplyKeyboardMarkup keyboardRows = BottomButton.sendBottomButton();
-        SendMessage message = SendMessage.builder().text("暂时停用此功能！").chatId(chatId+"").build();
+        SendMessage message = SendMessage.builder().text(text).chatId(chatId+"").build();
         message.setReplyMarkup(keyboardRows);
         //使用Bot的execute方法发送消息
         try {
@@ -295,15 +297,19 @@ public class ExecBot extends TelegramLongPollingBot {
 
     }
 
-    private void sendMessAge(String botToken, Long chatId, String text) throws Exception {
-        String url = "http://127.0.0.1:1080/bot" + botToken + "/sendMessage";
+    private void sendMessAge(String botToken, Long chatId, String text)  {
+        String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
         JSONObject json = new JSONObject();
         json.put("chat_id", chatId);
         json.put("text", text);
         json.put("parse_mode", "MarkdownV2");
         json.put("disable_web_page_preview", true);
         json.put("disable_notification", true);
-        HttpUtils.postJSON(url, json.toJSONString());
+        try {
+            HttpUtils.postJSON(url, json.toJSONString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

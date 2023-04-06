@@ -1,5 +1,9 @@
 package com.zeus.modules.trx.utils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.zeus.modules.trx.entity.BinanceDaiBi;
+import com.zeus.modules.trx.entity.BinancePair;
 import com.zeus.utils.HttpUtils;
 import net.sf.json.JsonConfig;
 import org.tron.trident.core.ApiWrapper;
@@ -7,10 +11,10 @@ import org.tron.trident.core.exceptions.IllegalException;
 import org.tron.trident.proto.Chain;
 import org.tron.trident.proto.Response;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TRXData {
 //    //main net, using TronGrid
@@ -21,15 +25,50 @@ public class TRXData {
 //    ApiWrapper wrapper = ApiWrapper.ofNile("hex private key");
 
     /**
-     * 通过代币获取汇率
+     * 通过Bianca获取法币汇率
      *
-     * @param apiUrl 网络地址
-     * @param fromSymbol 代币
-     * @param toSymbol 代币
      */
-    public static String getsymbol(String apiUrl, String fromSymbol, String toSymbol) {
-        String pathUrl = apiUrl.concat(fromSymbol).concat(toSymbol);
-        return HttpUtils.get(pathUrl);
+    public static String getsymbol(String pathUrl, String currency) {
+        String huilv="";
+        String parame = pathUrl.concat("bapi/fiat/v3/public/fiatpayment/sell/get-fiat-list").concat("?cryptoCurrency=").concat(currency);
+        String fabi = HttpUtils.get(parame);
+        JSONObject jsonObject =JSONObject.parseObject(fabi);
+        jsonObject =JSONObject.parseObject(jsonObject.get("data").toString());
+        List<BinancePair> binancePairs = JSONArray.parseArray(jsonObject.get("fiatList").toString(),BinancePair.class);
+        Iterator<BinancePair> it = binancePairs.iterator();
+        while (it.hasNext())
+        {
+            BinancePair binancePair = it.next();
+            if (!"CNY".equals(binancePair.getAssetCode()) && !"USD".equals(binancePair.getAssetCode()))
+            {
+                it.remove();
+            }else {
+                huilv += binancePair.getAssetCode() + ": `" + binancePair.getQuotation()+"`\n";
+            }
+        }
+        String parame1 = pathUrl.concat("api/v3/ticker/price");
+        String daibi = HttpUtils.get(parame1);
+        List<BinanceDaiBi> binanceDaiBis = JSONArray.parseArray(daibi,BinanceDaiBi.class);
+        Iterator<BinanceDaiBi> it1 = binanceDaiBis.iterator();
+        while (it1.hasNext())
+        {
+            BinanceDaiBi binanceDaiBi = it1.next();
+            if (!"ETHUSDT".equals(binanceDaiBi.getSymbol())&& binanceDaiBi.getSymbol().indexOf("BTCUSDT")<0 && binanceDaiBi.getSymbol().indexOf("TRXUSDT")<0)
+            {
+                it1.remove();
+            }else {
+                huilv += binanceDaiBi.getSymbol().replace("USDT","") + ": `" + doubleFormatNumber((1/ binanceDaiBi.getPrice()))+"`\n";
+            }
+        }
+        return huilv;
+    }
+    /**
+     * 通过Bianca获取代币TRX汇率
+     *
+     */
+    public static String getTrxsymbol(String pathUrl) {
+        String parame = pathUrl.concat("api/v3/ticker/price").concat("?symbol=").concat(Constant.DAIBI_TRX_ADDRESS).concat(Constant.DAIBI_USDT_ADDRESS);
+        return HttpUtils.get(parame);
     }
     /**
      * 通过账户地址获取账户信息。
@@ -90,7 +129,29 @@ public class TRXData {
         net.sf.json.JSONObject taskArray = net.sf.json.JSONObject.fromObject(params, jsonConfig);
         return taskArray.toString();
     }
+    /**
+     * 当浮点型数据位数超过10位之后，数据变成科学计数法显示。用此方法可以使其正常显示。
+     * 保留两位小数向下取整
+     * @param value
+     * @return Sting
+     */
+    public static String doubleFormatNumber(double value) {
+        if(value != 0.00){
+            if ((int)value == value)
+            {
+                DecimalFormat df = new DecimalFormat("#############");
+                return df.format(value);
+            }else {
+                DecimalFormat df = new DecimalFormat("#0.#######");
+                df.setRoundingMode(RoundingMode.DOWN);
+                return df.format(value);
+            }
 
+        }else{
+            return "0";
+        }
+
+    }
     public static void main(String[] args) throws Exception {
         String record = "";
         String privateKey = "369e777966f6113bf65fdb4518f0721c88c4771ec79e37a4dc849fee346fd8ba";//发起人秘钥
@@ -100,7 +161,8 @@ public class TRXData {
         /**
          * 获取代币之间的汇率
          */
-        record = getsymbol(Constant.BASE_API_URL, Constant.TRX_ADDRESS,Constant.USDT_ADDRESS);
+//        record = getsymbol(Constant.BINANCE_API,Constant.DAIBI_USDT_ADDRESS);
+        record = getTrxsymbol(Constant.BINANCE_API);
         /**
          * 获取用户信息
          */
