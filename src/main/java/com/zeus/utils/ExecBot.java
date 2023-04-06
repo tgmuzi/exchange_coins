@@ -8,8 +8,7 @@ import com.zeus.modules.trx.entity.BinancePair;
 import com.zeus.modules.trx.entity.CoinsVo;
 import com.zeus.modules.trx.utils.Constant;
 import com.zeus.modules.trx.utils.TRXData;
-import com.zeus.telegramBot.BottomButton;
-import com.zeus.telegramBot.BuiltInButton;
+import com.zeus.telegramBot.*;
 import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -19,7 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -88,50 +86,20 @@ public class ExecBot extends TelegramLongPollingBot {
                     }
                     break;
                 case "查汇率":
-                    String infoHuiLv ="当前汇率为：\n";
-                    infoHuiLv += TRXData.getsymbol(Constant.BINANCE_API, Constant.DAIBI_USDT_ADDRESS);
-                    infoHuiLv +="\n" + " * 以上更新时间为 * ："+ new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
-                    try {
-                        sendMsg(chatId, infoHuiLv);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    String infoHuiLv= HuiLv.huilv();
+                    sendMsg(chatId, infoHuiLv);
                     break;
                 case "兑换TRX":
-                    String info = TRXData.getTrxsymbol(Constant.BINANCE_API);
-                    BinanceDaiBi binanceDaiBi =JSONObject.parseObject(info,BinanceDaiBi.class);
-                    String huilv="";
-                    huilv= "\uD83D\uDC4F 欢迎  *" + lastName + " *\n" +
-                            "\n兑换TRX地址：\n`" +  Constant.TRX_ADDRESS +"`\n * 上述地址点击可复制 * \n" +
-                            " * 进U即兑，全自动返TRX，一笔一回，1U起兑，当前兑换比例 \n 1U : "+TRXData.doubleFormatNumber((1/ binanceDaiBi.getPrice()))+"TRX *\n" +
-                            " * 请不要使用交易所转账，丢失不负责 * \n" +
-                            " * 注：交易经过19次网络确认，两分钟内到账 * ";
-                    try {
+                        String huilv = DuiHuanTRX.trx(lastName);
                         sendMsg(chatId, huilv);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     break;
                 case "已绑定地址":
-                     fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "\n" + "请输入TRC地址：";
-                    try {
+                        fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "\n" + "请输入TRC地址：";
                         sendMsg(chatId, fromText);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     break;
                 default:
-                    if (text.length() >10){
-                        String infoAccount = TRXData.getAccount(Constant.TRX_API, text);
-                        CoinsVo coinsVo = JSONObject.parseObject(infoAccount, CoinsVo.class);
-                        fromText = "地址：\n" + coinsVo.getAddress() + "\n" + "当前TRX余额："+ coinsVo.getBalance()+ "\n" + "免费带宽已使用量："+ coinsVo.getFree_net_usage();
-                        try {
-                            sendMsg(chatId, fromText);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                    }
+                        fromText =ErCiShiJIan.duoci(text);
+                        sendMsg(chatId, fromText);
                     break;
             }
         } else {
