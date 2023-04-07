@@ -79,25 +79,25 @@
 		<dependency>
 			<groupId>org.tron.trident</groupId>
 			<artifactId>abi</artifactId>
-			<version>0.3.0</version>
+			<version>0.4.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/libs/abi-0.3.0.jar</systemPath>
+			<systemPath>${project.basedir}/src/main/resources/libs/abi-0.4.1.jar</systemPath>
 		</dependency>
 		<!-- trident-java utils -->
 		<dependency>
 			<groupId>org.tron.trident</groupId>
 			<artifactId>utils</artifactId>
-			<version>0.3.0</version>
+			<version>0.4.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/libs/utils-0.3.0.jar</systemPath>
+			<systemPath>${project.basedir}/src/main/resources/libs/utils-0.4.1.jar</systemPath>
 		</dependency>
 		<!-- trident-java core -->
 		<dependency>
 			<groupId>org.tron.trident</groupId>
 			<artifactId>core</artifactId>
-			<version>0.3.0</version>
+			<version>0.4.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/libs/core-0.3.0.jar</systemPath>
+			<systemPath>${project.basedir}/src/main/resources/libs/core-0.4.1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
@@ -144,6 +144,13 @@
 			<artifactId>telegrambots</artifactId>
 			<version>5.7.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.yuyenews</groupId>
+			<artifactId>Magician-Scanning</artifactId>
+			<version>1.0.11</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

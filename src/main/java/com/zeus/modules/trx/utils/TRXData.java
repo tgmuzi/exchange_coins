@@ -2,19 +2,27 @@ package com.zeus.modules.trx.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.protobuf.ByteString;
 import com.zeus.modules.trx.entity.BinanceDaiBi;
 import com.zeus.modules.trx.entity.BinancePair;
+import com.zeus.utils.HexUtils;
 import com.zeus.utils.HttpUtils;
 import net.sf.json.JsonConfig;
+import org.bouncycastle.util.encoders.Hex;
 import org.tron.trident.core.ApiWrapper;
 import org.tron.trident.core.exceptions.IllegalException;
 import org.tron.trident.proto.Chain;
 import org.tron.trident.proto.Response;
+import org.tron.trident.utils.Base58Check;
 
+import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.tron.trident.core.ApiWrapper.parseAddress;
 
 public class TRXData {
 //    //main net, using TronGrid
@@ -162,7 +170,7 @@ public class TRXData {
          * 获取代币之间的汇率
          */
 //        record = getsymbol(Constant.BINANCE_API,Constant.DAIBI_USDT_ADDRESS);
-        record = getTrxsymbol(Constant.BINANCE_API);
+//        record = getTrxsymbol(Constant.BINANCE_API);
         /**
          * 获取用户信息
          */
@@ -171,9 +179,16 @@ public class TRXData {
         /**
          * TRX转账
          */
-//        record = transferTRX(privateKey, fromAddress, toAddress, amount);
+//        record = transferTRX(privateKey, fromAddress, toAddress, amount);41ae6912d92977a42fa3977385382b4ec893e1f0fc
 
 
-        System.out.println(record);
+        System.out.println(fromAddress);
+        System.out.println(ByteUtils.tryToHexAddr(fromAddress));
+        System.out.println(toBase58Address(ByteUtils.tryToHexAddr(fromAddress)));
+
+    }
+    public static String toBase58Address(String address) {
+        ByteString rawAddress = parseAddress(address);
+        return Base58Check.bytesToBase58(rawAddress.toByteArray());
     }
 }
