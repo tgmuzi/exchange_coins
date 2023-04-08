@@ -16,6 +16,7 @@ import org.tron.trident.proto.Chain;
 import org.tron.trident.proto.Response;
 import org.tron.trident.utils.Base58Check;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -130,10 +131,10 @@ public class TRXData {
     }
 
     /**
-     * 通过账户地址获取账户信息。
+     * 通过交易哈希ID获取交易详情
      *
      * @param pathUrl 网络地址
-     * @param value 账户地址
+     * @param value 哈希ID
      */
     public static String GetTransactionById(String pathUrl, String value) {
         Map<String, Object> map = new TreeMap<>();
@@ -174,14 +175,12 @@ public class TRXData {
     public static void main(String[] args) throws Exception {
         String record = "";
         String privateKey = "369e777966f6113bf65fdb4518f0721c88c4771ec79e37a4dc849fee346fd8ba";//发起人秘钥
-        String fromAddress = "TE5mvcKbHyacJu5B7czqwcQcU9X9rL6w7A"; //发起人
-        String toAddress = "THccoKjASTyEMmKL5zTNNzR9VDoRz8GSb5";//接收人
-        long amount = 1000000L;
+//        String fromAddress = "TE5mvcKbHyacJu5B7czqwcQcU9X9rL6w7A"; //发起人
+//        String toAddress = "THccoKjASTyEMmKL5zTNNzR9VDoRz8GSb5";//接收人
         /**
          * 获取代币之间的汇率
          */
 //        record = getsymbol(Constant.BINANCE_API,Constant.DAIBI_USDT_ADDRESS);
-//        record = getTrxsymbol(Constant.BINANCE_API);
         /**
          * 获取用户信息
          */
@@ -193,27 +192,60 @@ public class TRXData {
          */
 //        record = transferTRX(privateKey, fromAddress, toAddress, amount);
 
-//        ApiWrapper wrapper = ApiWrapper.ofNile(privateKey);
-//       Chain.Transaction transaction= wrapper.getTransactionById("6100006f5774212a75ef84dbb1bd77bcd8028e3852fbececa48316a57f0917ae");
-//        System.out.println(fromAddress);
-//        System.out.println(ByteUtils.tryToHexAddr(fromAddress));
-        System.out.println(dataDecodingTutorial("a9059cbb00000000000000000000000053dc22e8cd7c9bb9560cad4e830b149b672185820000000000000000000000000000000000000000000000000000000000989680"));
+        String huilv = getTrxsymbol(Constant.BINANCE_API);
+        BinanceDaiBi binanceDaiBis = JSONObject.parseObject(huilv,BinanceDaiBi.class);
+        record = GetTransactionById(Constant.TRX_API, "6100006f5774212a75ef84dbb1bd77bcd8028e3852fbececa48316a57f0917ae");
+        JSONObject jsonObject = JSONObject.parseObject(record);
+        jsonObject=JSONObject.parseObject(jsonObject.get("raw_data").toString());
+        JSONArray jsonArray =JSONArray.parseArray(jsonObject.get("contract").toString());
+        jsonObject=JSONObject.parseObject(jsonArray.get(0).toString());
+        jsonObject=JSONObject.parseObject(jsonObject.get("parameter").toString());
+        jsonObject=JSONObject.parseObject(jsonObject.get("value").toString());
+        Map<String,Object> map = dataDecodingTutorial(jsonObject.get("data").toString());
+        BigDecimal amountNew = new BigDecimal(map.get("amount").toString());
+        amountNew = Arith.divide(amountNew, BigDecimal.valueOf(binanceDaiBis.getPrice()));
+        String fromAddress = TRXData.toBase58Address(jsonObject.get("owner_address").toString());
+        String toAddress = map.get("toAddress").toString();
+        Number num = Float.parseFloat(amountNew.toString());
+        int oamount = num.intValue();
+        long amount = Long.valueOf(oamount);
+        String contract_address = TRXData.toBase58Address(jsonObject.get("contract_address").toString());//交易合约地址
+        if (Constant.CONTRACT_ADDRESS.equals(contract_address) && Constant.TRX_ADDRESS.equals(toAddress)){
+            record = TRXData.transferTRX(privateKey, toAddress, fromAddress, amount);
+            System.out.println(1/binanceDaiBis.getPrice());
+            System.out.println(jsonObject.get("data").toString());
+            System.out.println("owner_address:"+toBase58Address(jsonObject.get("owner_address").toString()));
+            System.out.println("toAddress:"+map.get("toAddress").toString());
+            System.out.println("contract_address:"+toBase58Address(jsonObject.get("contract_address").toString()));
+            System.out.println("amount:"+Arith.divide(amountNew, BigDecimal.valueOf(1000000)));
+            System.out.println(record);
+        }
+
 
 
     }
-    public static String dataDecodingTutorial(String DATA) {
-        String rawSignature = DATA.substring(0,8);
-        String signature = "transfer(address,uint256)"; //function signature
-        Address rawRecipient = TypeDecoder.decode(DATA.substring(8,72)); //recipient address
+
+    /**
+     * 哈希交易data数据解析
+     * @param DATA
+     * @return
+     */
+    public static Map<String,Object> dataDecodingTutorial(String DATA) {
+        Map<String,Object> map = new TreeMap<>();
+        Address rawRecipient = TypeDecoder.decodeAddress(DATA.substring(8,72)); //recipient address
         String recipient = rawRecipient.toString();
-        Uint256 rawAmount = TypeDecoder.decode(DATA.substring(72,136),8, Uint256.class); //amount
+        Uint256 rawAmount = TypeDecoder.decodeNumeric(DATA.substring(72,136), Uint256.class); //amount
         BigInteger amount = rawAmount.getValue();
-
-        System.out.println(signature);
-        System.out.println("Transfer " + amount + " to " + recipient);
-        return amount+"";
+        map.put("amount",amount);
+        map.put("toAddress",recipient);
+        return map;
     }
 
+    /**
+     * TRON  HEX 地址转换 Base58
+     * @param address
+     * @return
+     */
     public static String toBase58Address(String address) {
         ByteString rawAddress = parseAddress(address);
         return Base58Check.bytesToBase58(rawAddress.toByteArray());

@@ -14,4 +14,5 @@ public class Constant {
     public static final String DAIBI_TRX_ADDRESS ="TRX";
     public static final String TRX_ADDRESS ="TE5mvcKbHyacJu5B7czqwcQcU9X9rL6w7A";
     public static final String TRX_ADDRESS_2 ="THccoKjASTyEMmKL5zTNNzR9VDoRz8GSb5";
+    public static final String CONTRACT_ADDRESS ="TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj";
 }

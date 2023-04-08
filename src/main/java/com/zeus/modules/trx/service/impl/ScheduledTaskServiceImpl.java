@@ -50,26 +50,27 @@ public class ScheduledTaskServiceImpl implements ScheduledTaskService {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-
+        /**
+         * 启动TRON链上交易扫描
+         */
         EventThreadPool.init(5);
-
         MagicianBlockchainScan magicianBlockchainScan1 = tron();
 
     }
+
+    /**
+     * 启动TRON链上交易扫描
+     */
     private static MagicianBlockchainScan tron(){
         try {
             MagicianBlockchainScan magicianBlockchainScan = MagicianBlockchainScan.create()
                     .setRpcUrl(TronRpcInit.create().addRpcUrl("https://nile.trongrid.io/wallet"))
                     .setScanPeriod(500)
-                    .setBeginBlockNumber(BigInteger.valueOf(35694195))
+                    .setBeginBlockNumber(BigInteger.valueOf(35700581))
                     .addTronMonitorEvent(new TronEventOne())
                     .setRetryStrategy(new TronRetry());
 
             magicianBlockchainScan.start();
-
-//            Thread.sleep(20000);
-            logger.info("===========");
-//            magicianBlockchainScan.shutdown();
 
             return magicianBlockchainScan;
         } catch (Exception e) {
