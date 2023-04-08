@@ -15,6 +15,7 @@ import org.tron.trident.core.exceptions.IllegalException;
 import org.tron.trident.proto.Chain;
 import org.tron.trident.proto.Response;
 import org.tron.trident.utils.Base58Check;
+import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -206,20 +207,16 @@ public class TRXData {
         amountNew = Arith.divide(amountNew, BigDecimal.valueOf(binanceDaiBis.getPrice()));
         String fromAddress = TRXData.toBase58Address(jsonObject.get("owner_address").toString());
         String toAddress = map.get("toAddress").toString();
+        BigDecimal usdt = Convert.fromWei(amountNew, Convert.Unit.MWEI);// 转换成USDT金额格式
         Number num = Float.parseFloat(amountNew.toString());
         int oamount = num.intValue();
         long amount = Long.valueOf(oamount);
         String contract_address = TRXData.toBase58Address(jsonObject.get("contract_address").toString());//交易合约地址
-        if (Constant.CONTRACT_ADDRESS.equals(contract_address) && Constant.TRX_ADDRESS.equals(toAddress)){
-            record = TRXData.transferTRX(privateKey, toAddress, fromAddress, amount);
-            System.out.println(1/binanceDaiBis.getPrice());
-            System.out.println(jsonObject.get("data").toString());
-            System.out.println("owner_address:"+toBase58Address(jsonObject.get("owner_address").toString()));
-            System.out.println("toAddress:"+map.get("toAddress").toString());
-            System.out.println("contract_address:"+toBase58Address(jsonObject.get("contract_address").toString()));
-            System.out.println("amount:"+Arith.divide(amountNew, BigDecimal.valueOf(1000000)));
-            System.out.println(record);
-        }
+        System.out.println(jsonObject.get("data").toString());
+        System.out.println("owner_address:"+toBase58Address(jsonObject.get("owner_address").toString()));
+        System.out.println("toAddress:"+map.get("toAddress").toString());
+        System.out.println("contract_address:"+toBase58Address(jsonObject.get("contract_address").toString()));
+        System.out.println("amount:"+usdt);
 
 
 
