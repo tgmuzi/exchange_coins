@@ -65,7 +65,7 @@ public class ScheduledTaskServiceImpl implements ScheduledTaskService {
         try {
             MagicianBlockchainScan magicianBlockchainScan = MagicianBlockchainScan.create()
                     .setRpcUrl(TronRpcInit.create().addRpcUrl("https://nile.trongrid.io/wallet"))
-                    .setScanPeriod(500)
+                    .setScanPeriod(1000)
                     .setBeginBlockNumber(BigInteger.valueOf(35700581))
                     .addTronMonitorEvent(new TronEventOne())
                     .setRetryStrategy(new TronRetry());
