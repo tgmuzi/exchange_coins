@@ -5,10 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.protobuf.ByteString;
 import com.zeus.modules.trx.entity.BinanceDaiBi;
 import com.zeus.modules.trx.entity.BinancePair;
-import com.zeus.utils.HexUtils;
 import com.zeus.utils.HttpUtils;
 import net.sf.json.JsonConfig;
-import org.bouncycastle.util.encoders.Hex;
+import org.tron.trident.abi.TypeDecoder;
+import org.tron.trident.abi.datatypes.Address;
+import org.tron.trident.abi.datatypes.generated.Uint256;
 import org.tron.trident.core.ApiWrapper;
 import org.tron.trident.core.exceptions.IllegalException;
 import org.tron.trident.proto.Chain;
@@ -17,7 +18,6 @@ import org.tron.trident.utils.Base58Check;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -130,6 +130,17 @@ public class TRXData {
     }
 
     /**
+     * 通过账户地址获取账户信息。
+     *
+     * @param pathUrl 网络地址
+     * @param value 账户地址
+     */
+    public static String GetTransactionById(String pathUrl, String value) {
+        Map<String, Object> map = new TreeMap<>();
+        map.put("value", value);
+        return HttpUtils.postRequest(pathUrl + Constant.TRX_GETTRANSACTIONBYID, jsonMap(map));
+    }
+    /**
      * 参数套壳
      */
     public static String jsonMap(Map<String, Object> params) {
@@ -174,19 +185,35 @@ public class TRXData {
         /**
          * 获取用户信息
          */
-//        record = getAccount(Constant.TRX_API, fromAddress);
+//        record = GetTransactionById(Constant.TRX_API, "6100006f5774212a75ef84dbb1bd77bcd8028e3852fbececa48316a57f0917ae");
+//        System.out.println(record);
 //        CoinsVo coinsVo = JSONObject.parseObject(record, CoinsVo.class);
         /**
          * TRX转账
          */
-//        record = transferTRX(privateKey, fromAddress, toAddress, amount);41ae6912d92977a42fa3977385382b4ec893e1f0fc
+//        record = transferTRX(privateKey, fromAddress, toAddress, amount);
 
+//        ApiWrapper wrapper = ApiWrapper.ofNile(privateKey);
+//       Chain.Transaction transaction= wrapper.getTransactionById("6100006f5774212a75ef84dbb1bd77bcd8028e3852fbececa48316a57f0917ae");
+//        System.out.println(fromAddress);
+//        System.out.println(ByteUtils.tryToHexAddr(fromAddress));
+        System.out.println(dataDecodingTutorial("a9059cbb00000000000000000000000053dc22e8cd7c9bb9560cad4e830b149b672185820000000000000000000000000000000000000000000000000000000000989680"));
 
-        System.out.println(fromAddress);
-        System.out.println(ByteUtils.tryToHexAddr(fromAddress));
-        System.out.println(toBase58Address(ByteUtils.tryToHexAddr(fromAddress)));
 
     }
+    public static String dataDecodingTutorial(String DATA) {
+        String rawSignature = DATA.substring(0,8);
+        String signature = "transfer(address,uint256)"; //function signature
+        Address rawRecipient = TypeDecoder.decode(DATA.substring(8,72)); //recipient address
+        String recipient = rawRecipient.toString();
+        Uint256 rawAmount = TypeDecoder.decode(DATA.substring(72,136),8, Uint256.class); //amount
+        BigInteger amount = rawAmount.getValue();
+
+        System.out.println(signature);
+        System.out.println("Transfer " + amount + " to " + recipient);
+        return amount+"";
+    }
+
     public static String toBase58Address(String address) {
         ByteString rawAddress = parseAddress(address);
         return Base58Check.bytesToBase58(rawAddress.toByteArray());
