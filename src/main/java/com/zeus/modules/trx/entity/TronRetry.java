@@ -8,6 +8,6 @@ public class TronRetry implements RetryStrategy {
 
     @Override
     public void retry(BigInteger bigInteger) {
-        System.out.println("TRON 重试策略" + bigInteger);
+        System.out.println("TRON 区块高度：" + bigInteger);
     }
 }

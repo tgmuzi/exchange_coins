@@ -3,20 +3,13 @@ package com.zeus.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.zeus.modules.trx.entity.BinanceDaiBi;
-import com.zeus.modules.trx.entity.BinancePair;
-import com.zeus.modules.trx.entity.CoinsVo;
-import com.zeus.modules.trx.utils.Constant;
-import com.zeus.modules.trx.utils.TRXData;
 import com.zeus.telegramBot.*;
-import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -25,9 +18,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * 机器人脚本
+ */
 public class ExecBot extends TelegramLongPollingBot {
 
     //填你自己的token和username

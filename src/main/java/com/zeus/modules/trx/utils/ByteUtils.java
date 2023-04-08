@@ -1,7 +1,6 @@
 package com.zeus.modules.trx.utils;
 
 import com.google.protobuf.ByteString;
-import com.zeus.utils.HttpUtils;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.core.Sha256Hash;
 import org.tron.trident.utils.Base58Check;

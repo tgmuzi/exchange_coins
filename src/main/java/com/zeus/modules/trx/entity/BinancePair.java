@@ -1,5 +1,8 @@
 package com.zeus.modules.trx.entity;
 
+/**
+ * 法币汇率
+ */
 public class BinancePair {
     private String assetCode;
     private String assetName;

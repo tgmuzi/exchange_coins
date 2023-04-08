@@ -1,5 +1,8 @@
 package com.zeus.modules.trx.entity;
 
+/**
+ * 代币汇率
+ */
 public class BinanceDaiBi {
     private String symbol;
     private double price;
