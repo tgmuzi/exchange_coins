@@ -13,6 +13,9 @@ import com.zeus.modules.trx.entity.TrxBigInteger;
 import com.zeus.modules.trx.service.ITrxBigIntegerService;
 import com.zeus.utils.HttpUtils;
 import net.sf.json.JsonConfig;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tron.trident.abi.TypeDecoder;
@@ -37,6 +40,7 @@ import static org.tron.trident.core.ApiWrapper.parseAddress;
 
 @Component
 public class TRXData {
+        protected static Logger logger = LoggerFactory.getLogger(TRXData.class);
         private static RemotePropertiesConfig remotePropertiesConfig;
         @Autowired
         private RemotePropertiesConfig remoteProperties;
@@ -173,7 +177,7 @@ public class TRXData {
             for (TronContractModel tronContractModel : tronContractModels) {
                 TronValueModel tronValueModel = tronContractModel.getParameter().getValue();
                 if (tronValueModel.getToAddress() == null) {
-                    System.out.println("TRON, txID: " + transactionModel.getTronTransactionModel().getTxID());
+                    logger.info("TRON, txID: " + transactionModel.getTronTransactionModel().getTxID());
                     // 查询 TEXUSDT汇率
                     String huilv = TRXData.getTrxsymbol(Constant.BINANCE_API);
                     // 查询 TEXUSDT汇率进行编译
@@ -191,7 +195,7 @@ public class TRXData {
                     jsonObject = JSONObject.parseObject(jsonObject.get("parameter").toString());//编译
                     jsonObject = JSONObject.parseObject(jsonObject.get("value").toString());//编译
 
-                    String contract_address = TRXData.toBase58Address(jsonObject.get("contract_address").toString());//交易合约地址
+                    String contract_address = TRXData.toBase58Address(jsonObject.get("contract_address"));//交易合约地址
                     if (remotePropertiesConfig.getContractAddress().equals(contract_address)) {
                         //通过订单查询的交易哈希秘钥进行解析
                         Map<String, Object> map = TRXData.dataDecodingTutorial(jsonObject.get("data").toString());
@@ -322,8 +326,12 @@ public class TRXData {
      * @param address
      * @return
      */
-    public static String toBase58Address(String address) {
-        ByteString rawAddress = parseAddress(address);
-        return Base58Check.bytesToBase58(rawAddress.toByteArray());
+    public static String toBase58Address(Object address) {
+        if (StringUtils.isNotBlank(address+"")){
+            ByteString rawAddress = parseAddress(address.toString());
+            return Base58Check.bytesToBase58(rawAddress.toByteArray());
+        }else {
+            return null;
+        }
     }
 }
