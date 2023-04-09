@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://107.148.37.32:3306/trx?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-    password: y2wc05s7ou1ea5ljtk@3K
+    password: TGLOCAL(cJpUFFAa4lCEuuqcjOIE6hBzzLs3cHfbHCVl6ybjBgk=)
     type: com.alibaba.druid.pool.DruidDataSource
     druid: # 全局druid参数，绝大部分值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
       #   数据源其他配置

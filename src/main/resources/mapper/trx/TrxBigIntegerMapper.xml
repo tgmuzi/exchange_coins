@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zeus.modules.trx.dao.TrxBigIntegerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zeus.modules.trx.entity.TrxBigInteger">
+        <id column="ID" property="id" />
+        <result column="BIG_INTEGER" property="bigInteger" />
+        <result column="CREATE_TIME" property="createTime" />
+    </resultMap>
+
+
+    <select id="getById" resultType="com.zeus.modules.trx.entity.TrxBigInteger">
+        SELECT * from TRX_BIG_INTEGER ORDER BY CREATE_TIME DESC LIMIT 1
+    </select>
+</mapper>

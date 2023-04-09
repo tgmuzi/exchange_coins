@@ -3,13 +3,16 @@ package com.zeus.modules.trx.service.impl;
 import com.blockchain.scanning.MagicianBlockchainScan;
 import com.blockchain.scanning.biz.thread.EventThreadPool;
 import com.blockchain.scanning.commons.config.rpcinit.impl.TronRpcInit;
-import com.zeus.modules.trx.entity.TronRetry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zeus.modules.trx.entity.TrxBigInteger;
+import com.zeus.modules.trx.event.tron.TronEventOne;
+import com.zeus.modules.trx.event.tron.TronRetry;
+import com.zeus.modules.trx.service.ITrxBigIntegerService;
 import com.zeus.modules.trx.service.ScheduledTaskService;
-import com.zeus.modules.trx.event.TronEventOne;
 import com.zeus.utils.ExecBot;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -22,6 +25,10 @@ import java.math.BigInteger;
 @Service
 public class ScheduledTaskServiceImpl implements ScheduledTaskService {
     private static Logger logger = LoggerFactory.getLogger(ScheduledTaskServiceImpl.class);
+
+    @Autowired
+    private ITrxBigIntegerService trxBigIntegerService;
+
     @Override
     public void All_Bot() {
         //梯子在自己电脑上就写127.0.0.1  软路由就写路由器的地址
@@ -61,12 +68,13 @@ public class ScheduledTaskServiceImpl implements ScheduledTaskService {
     /**
      * 启动TRON链上交易扫描
      */
-    private static MagicianBlockchainScan tron(){
+    private  MagicianBlockchainScan tron(){
         try {
+            TrxBigInteger trxBigInteger = trxBigIntegerService.getById();
             MagicianBlockchainScan magicianBlockchainScan = MagicianBlockchainScan.create()
                     .setRpcUrl(TronRpcInit.create().addRpcUrl("https://nile.trongrid.io/wallet"))
                     .setScanPeriod(1000)
-                    .setBeginBlockNumber(BigInteger.valueOf(35700581))
+                    .setBeginBlockNumber(BigInteger.valueOf(Integer.parseInt(trxBigInteger.getBigInteger())))
                     .addTronMonitorEvent(new TronEventOne())
                     .setRetryStrategy(new TronRetry());
 

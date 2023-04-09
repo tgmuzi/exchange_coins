@@ -25,7 +25,7 @@ spring:
 #mybatis
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
-  typeAliasesPackage: com.example.demo.**.entity
+  typeAliasesPackage: com.zeus.modules.**.entity
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 2
@@ -60,4 +60,8 @@ jasypt:
       suffix: )
 
 adminPath: /a
-secret-key: MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAkSrWZaLEX3d6ikrUuZCQA1YzPk9hvx1HiadVtEA1tKZXNl6f+20+UDjjik2TZNVy8al5mvoe9dEGmcGpFWvtnQIDAQABAkBHKafGVR9M6WYx6vMTMJHYgOZH8mQpavIJwfUakquBLZf/BF8A95pNMyQWM7OP+IxqfJFFF0AdhEjsy1mU6/FlAiEA1NB4lBQglLmLTvqQifImzZ8kmTz6/ueXCUO8/jPbQUsCIQCuoCkTiNZm0rllJ6YzkD52w0miLT3uKNJfj8FAhmkjtwIgJwnO9Kr0hxO6QFSqawOmppWI6ytKh7QH+sUYSDFPCR0CIEe0jolt9BQuzWAjItUjkvKziCXnC/oimxgQcJttVfkLAiEAktkvpFvkH6Ex/fjt6h3dlvr7aJL0OayvnlbOQV1fBYc=
+
+tron:
+  trx_address: TE5mvcKbHyacJu5B7czqwcQcU9X9rL6w7A
+  contract_address: TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj
+  privateKey: 369e777966f6113bf65fdb4518f0721c88c4771ec79e37a4dc849fee346fd8ba
