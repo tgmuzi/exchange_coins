@@ -55,7 +55,7 @@ public class ExecBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
 
             Long chatId = message.getChatId();
-            String lastName = message.getChat().getLastName();
+            String lastName = message.getChat().getFirstName() + (message.getChat().getLastName() == null ? "" : message.getChat().getLastName());
             String userName = message.getChat().getUserName();
             String text = message.getText();
             Integer messageId = message.getMessageId();

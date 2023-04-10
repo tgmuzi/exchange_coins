@@ -194,8 +194,7 @@ public class TRXData {
                     JSONArray jsonArray = JSONArray.parseArray(jsonObject.get("contract").toString());
                     //编译
                     jsonObject = JSONObject.parseObject(jsonArray.get(0).toString());
-                    if("VoteWitnessContract".equals(jsonObject.get("type"))){continue;}
-                    if("ProposalCreateContract".equals(jsonObject.get("type"))){continue;}
+                    if(!"TriggerSmartContract".equals(jsonObject.get("type"))){continue;}
                     jsonObject = JSONObject.parseObject(jsonObject.get("parameter").toString());//编译
                     jsonObject = JSONObject.parseObject(jsonObject.get("value").toString());//编译
 
@@ -282,7 +281,7 @@ public class TRXData {
 //        record = transferTRX(privateKey, fromAddress, toAddress, amount);
 //        String huilv = getTrxsymbol(Constant.BINANCE_API);
 //        BinanceDaiBi binanceDaiBis = JSONObject.parseObject(huilv,BinanceDaiBi.class);
-        record = GetTransactionById(Constant.TRX_API, "4a1e01d5616c73e4ccc2f6165df3ae7edec561b4df391e4727be58dd573e24e2");
+        record = GetTransactionById(Constant.TRX_API, "2c889cc68526a6f6511eb42a4f88d195287d646f68e6b06d7e1a2a5b17f597e5");
         System.out.println(record);
 //        JSONObject jsonObject = JSONObject.parseObject(record);
 //        jsonObject=JSONObject.parseObject(jsonObject.get("raw_data").toString());
