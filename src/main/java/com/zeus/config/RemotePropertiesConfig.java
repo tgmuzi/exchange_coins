@@ -16,6 +16,17 @@ public class RemotePropertiesConfig {
     @Value("${tron.privateKey:#{null}}")
     private String privateKey;
 
+    @Value("${adminPath}")
+    private String adminPath;
+
+    public String getAdminPath() {
+        return adminPath;
+    }
+
+    public void setAdminPath(String adminPath) {
+        this.adminPath = adminPath;
+    }
+
     public String getTrxAddress() {
         return trxAddress;
     }
