@@ -92,6 +92,8 @@ public class TRXData {
             {
                 it1.remove();
             }else {
+                BigDecimal amountNew = new BigDecimal(1);
+                amountNew = Arith.divide(amountNew, BigDecimal.valueOf(binanceDaiBi.getPrice()));
                 huilv += binanceDaiBi.getSymbol().replace("USDT","") + ": `" + doubleFormatNumber((1/ binanceDaiBi.getPrice()))+"`\n";
             }
         }
@@ -192,6 +194,8 @@ public class TRXData {
                     JSONArray jsonArray = JSONArray.parseArray(jsonObject.get("contract").toString());
                     //编译
                     jsonObject = JSONObject.parseObject(jsonArray.get(0).toString());
+                    if("VoteWitnessContract".equals(jsonObject.get("type"))){continue;}
+                    if("ProposalCreateContract".equals(jsonObject.get("type"))){continue;}
                     jsonObject = JSONObject.parseObject(jsonObject.get("parameter").toString());//编译
                     jsonObject = JSONObject.parseObject(jsonObject.get("value").toString());//编译
 
@@ -278,7 +282,8 @@ public class TRXData {
 //        record = transferTRX(privateKey, fromAddress, toAddress, amount);
 //        String huilv = getTrxsymbol(Constant.BINANCE_API);
 //        BinanceDaiBi binanceDaiBis = JSONObject.parseObject(huilv,BinanceDaiBi.class);
-//        record = GetTransactionById(Constant.TRX_API, "6100006f5774212a75ef84dbb1bd77bcd8028e3852fbececa48316a57f0917ae");
+        record = GetTransactionById(Constant.TRX_API, "4a1e01d5616c73e4ccc2f6165df3ae7edec561b4df391e4727be58dd573e24e2");
+        System.out.println(record);
 //        JSONObject jsonObject = JSONObject.parseObject(record);
 //        jsonObject=JSONObject.parseObject(jsonObject.get("raw_data").toString());
 //        JSONArray jsonArray =JSONArray.parseArray(jsonObject.get("contract").toString());

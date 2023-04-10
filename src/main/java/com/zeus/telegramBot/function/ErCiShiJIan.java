@@ -1,4 +1,4 @@
-package com.zeus.telegramBot;
+package com.zeus.telegramBot.function;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zeus.modules.trx.entity.CoinsVo;

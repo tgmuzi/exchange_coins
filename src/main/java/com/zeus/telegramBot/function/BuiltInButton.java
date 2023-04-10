@@ -1,4 +1,4 @@
-package com.zeus.telegramBot;
+package com.zeus.telegramBot.function;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,7 +16,7 @@ public class BuiltInButton {
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         List<InlineKeyboardButton> row3 = new ArrayList<>();
-        InlineKeyboardButton button1 = InlineKeyboardButton.builder().text("查询1").build();
+        InlineKeyboardButton button1 = InlineKeyboardButton.builder().text("查询").build();
         button1.setCallbackData("查询");
         row1.add(button1);
         InlineKeyboardButton button2 = InlineKeyboardButton.builder().text("监听").build();

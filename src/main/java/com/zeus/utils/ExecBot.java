@@ -3,7 +3,8 @@ package com.zeus.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.zeus.telegramBot.*;
+import com.zeus.modules.trx.utils.Constant;
+import com.zeus.telegramBot.function.*;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -57,6 +58,7 @@ public class ExecBot extends TelegramLongPollingBot {
             String lastName = message.getChat().getLastName();
             String userName = message.getChat().getUserName();
             String text = message.getText();
+            Integer messageId = message.getMessageId();
             switch (text) {
                 case "/now":
                     break;
@@ -76,26 +78,34 @@ public class ExecBot extends TelegramLongPollingBot {
                 case "查询":
                     fromText =  "\uD83D\uDC4F 欢迎  *"  + lastName + "*\n\n UID：`" + chatId +"`\n 请输入TRC地址：";
                     try {
-                        sendMsg(chatId, fromText);
+                        sendMsg(chatId, messageId, fromText);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
                 case "查汇率":
                     String infoHuiLv= HuiLv.huilv();
-                    sendMsg(chatId, infoHuiLv);
+                    sendMsg(chatId, messageId ,infoHuiLv);
                     break;
                 case "兑换TRX":
                         String huilv = DuiHuanTRX.trx(lastName);
-                        sendMsg(chatId, huilv);
+                        sendMsg(chatId,messageId, huilv);
                     break;
                 case "已绑定地址":
-                        fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "\n" + "请输入TRC地址：";
-                        sendMsg(chatId, fromText);
+                        fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "*\n@["  + userName + "]\n" + "TRC地址：\n`"+ Constant.TRX_ADDRESS +"`";
+                        sendMsg(chatId,messageId, fromText);
+                    break;
+                case "监听":
+                        fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "*\n  @["  + userName + "]\n" +  "请输入TRC地址：";
+                        sendMsg(chatId, messageId,fromText);
+                    break;
+                case "客服":
+                    fromText = "\uD83D\uDC4F 欢迎  *"  + lastName + "*\n  @["  + userName + "]\n" +  "客服地址地址：[客服](https://www.google.com/search?q=telegram)";
+                    sendMsg(chatId, messageId,fromText);
                     break;
                 default:
-                        fromText =ErCiShiJIan.duoci(text);
-                        sendMsg(chatId, fromText);
+                        fromText = ErCiShiJIan.duoci(text);
+                        sendMsg(chatId, messageId,fromText);
                     break;
             }
         } else {
@@ -185,11 +195,13 @@ public class ExecBot extends TelegramLongPollingBot {
     }
 
     //回复普通文本消息
-    public void sendMsg(long chatId, String fromText) {
+    public void sendMsg(long chatId,Integer messageId, String fromText) {
         //创建一个SendMessage对象
         SendMessage message = new SendMessage();
         message.setChatId(chatId + "");
+        message.setReplyToMessageId(messageId);
         message.setText(fromText);
+        message.enableHtml(true);
         message.enableMarkdown(true);
         //使用Bot的execute方法发送消息
         try {
