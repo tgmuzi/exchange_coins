@@ -32,7 +32,6 @@ public class BottomButton {
         row3.add("兑换TRX");
         row3.add("客服");
         keyboard.add(row3);
-
         keyboardMarkup.setKeyboard(keyboard);
 
         return keyboardMarkup;

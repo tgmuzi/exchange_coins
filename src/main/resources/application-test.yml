@@ -2,9 +2,9 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://107.148.37.32:3306/trx?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/trx?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: root
-    password: TGLOCAL(cJpUFFAa4lCEuuqcjOIE6hBzzLs3cHfbHCVl6ybjBgk=)
+    password: TGLOCAL(eDq5PMVbxtVmIeDxmnk/fB106TNgxUyl)
     type: com.alibaba.druid.pool.DruidDataSource
     druid: # 全局druid参数，绝大部分值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
       #   数据源其他配置
@@ -22,4 +22,4 @@ spring:
       filters: stat,wall # 监控统计和防御SQL注入的过滤器
       maxPoolPreparedStatementPerConnectionSize: 20
       useGlobalDataSourceStat: true
-      connectionProperties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJWyujWcYAZQIFEPTCKSY55gJzgKGXW6zs2q5ZjhNgQz9IPcV2yqQR3N0TSMehWoCCYSB0zinKxzcoeDJ8Nb+ZcCAwEAAQ==
+      connectionProperties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKXk8PQhEgtCXbxelOkXEsvlskQkSRlxtdWU7fMQBmKE2EEcmXsJiKmRYBBm8ICzehdB1Bee41LH9ub1gjenFJcCAwEAAQ==
